@@ -6,7 +6,7 @@ const User = require('../models/User')
 class UserController {
 
   index(req, res) {
-    User.find()
+    User.find(req.query)
       .exec()
       .then(docs => res.json({
         message: 'Listing all users',
@@ -20,10 +20,17 @@ class UserController {
       if (err)
         res.status(500).json(err)
       
+      var admAccess = false;
+
+      if (req.body.JWT_KEY === process.env.JWT_KEY) {
+        admAccess = true;
+      }
+
       new User({
         _id: mongoose.Types.ObjectId(),
         username: req.body.username,
-        password: hash
+        password: hash,
+        admin: admAccess
       })
         .save()
         .then(docs => res.json({
@@ -47,7 +54,7 @@ class UserController {
           
           const token = jwt.sign({
             username: user.username,
-            userId: user.userId
+            _id: user._id
           }, process.env.JWT_KEY, {
             expiresIn: '1h'
           });
