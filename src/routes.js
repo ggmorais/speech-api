@@ -13,8 +13,10 @@ router.delete('/users', UserController.deleteMany);
 router.delete('/users/:userId', UserController.deleteOne);
 
 router.get('/rooms', RoomController.index);
+router.get('/rooms/:roomId', RoomController.index);
 router.post('/rooms', RoomController.create);
-router.delete('/rooms', validate, RoomController.delete);
+router.delete('/rooms', validate, RoomController.deleteMany);
+router.delete('/rooms/:roomId', RoomController.deleteOne);
 router.patch('/rooms/:roomId', RoomController.insertMessage);
 router.patch('/rooms/:roomId', RoomController.insertUser);
 

@@ -1,10 +1,10 @@
+const mongoose = require('mongoose');
 const Room = require('../models/Room');
-
 
 class RoomController {
   
-  async index(req, res) {
-    Room.find()
+  index(req, res) {
+    Room.find(req.query)
       .populate('users', '_id username')
       .populate('messages.user', '_id username')
       .select('_id users messages name')
@@ -17,7 +17,7 @@ class RoomController {
       .catch(err => res.status(500).json(err));
   }
 
-  async create(req, res) {
+  create(req, res) {
     new Room({
       _id: mongoose.Types.ObjectId(),
       name: req.body.name
@@ -29,7 +29,7 @@ class RoomController {
       .catch(err => res.status(500).json(err));
   }
 
-  async delete(req, res) {
+  deleteMany(req, res) {
     Room.deleteMany()
       .exec()
       .then(doc => res.json({
@@ -38,7 +38,16 @@ class RoomController {
       .catch(err => res.status(500).json(err));
   }
 
-  async insertUser(req, res) {
+  deleteOne(req, res) {
+    Room.deleteOne({ _id: req.params.roomId })
+      .exec()
+      .then(doc => res.json({
+        message: 'All rooms deleted successfully'
+      }))
+      .catch(err => res.status(500).json(err));
+  }
+
+  insertUser(req, res) {
     Room.updateOne(
       { _id: req.params.roomId },
       { $addToSet: { users: req.body.userId } }
@@ -50,7 +59,7 @@ class RoomController {
       .catch(err => res.status(500).json(err));
   }
 
-  async insertMessage(req, res) {
+  insertMessage(req, res) {
     Room.updateOne(
       { _id: req.params.roomId }, 
       { $push: {
