@@ -54,16 +54,16 @@ class UserController {
           
           const token = jwt.sign({
             username: user.username,
-            _id: user._id
-          }, process.env.JWT_KEY, {
-            expiresIn: '1h'
+            _id: user._id,
+            deviceName: req.body.deviceName && req.body.deviceName
+          }, process.env.JWT_KEY, req.body.deviceName ? {} : {
+            expiresIn: '7d'
           });
 
           return res.json({
             message: 'User authenticated successfully',
             token: token
           })
-
         })
       })
       .catch();
@@ -88,6 +88,5 @@ class UserController {
   }
 
 }
-
 
 module.exports = new UserController;

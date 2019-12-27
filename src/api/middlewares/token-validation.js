@@ -23,14 +23,13 @@ class Validator {
         .exec()
         .then(user => {
           if (user.admin) {
-            console.log('acesso concedido por usr admin')
             return next();
           }
           return res.status(401).json({
             message: 'Access denied'
           });
         })
-        .catch(err => console.log('err', err));
+        .catch(err => res.status(500).json(err));
       
     } catch (err) {
       return res.status(401).json({

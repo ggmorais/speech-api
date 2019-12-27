@@ -6,7 +6,7 @@ const UserController = require('./api/controllers/UserController');
 const RoomController = require('./api/controllers/RoomController');
 
 
-router.get('/users', validate.admin, UserController.index);
+router.get('/users', validate.user, UserController.index);
 router.post('/users', UserController.create);
 router.post('/users/login', UserController.login);
 router.delete('/users', validate.admin, UserController.deleteMany);
