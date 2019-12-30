@@ -14,6 +14,7 @@ class App {
     this.static();
     this.headers();
     this.database();
+    this.errors();
   }
 
   routes() {
@@ -54,6 +55,10 @@ class App {
       };
       next();
     });
+  }
+
+  errors() {
+   //
   }
 }
 

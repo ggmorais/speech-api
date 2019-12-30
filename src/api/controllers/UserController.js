@@ -55,6 +55,7 @@ class UserController {
           const token = jwt.sign({
             username: user.username,
             _id: user._id,
+            admin: user.admin ? true : false,
             deviceName: req.body.deviceName && req.body.deviceName
           }, process.env.JWT_KEY, req.body.deviceName ? {} : {
             expiresIn: '7d'
@@ -66,7 +67,7 @@ class UserController {
           })
         })
       })
-      .catch();
+      .catch(err => res.json(err));
   }
 
   deleteMany(req, res) {
