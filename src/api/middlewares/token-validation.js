@@ -4,9 +4,20 @@ const User = require('../models/User');
 
 class Validator {
 
+  validation(req, res, next) {
+    try {
+      const decoded = jwt.verify(req.headers.authorization, process.env.JWT_KEY);
+      res.json({ message: 'Token valid' })
+    } catch (err) {
+      return res.status(401).json({
+        message: 'Access denied'
+      });
+    }
+  }
+
   user(req, res, next) {
     try {
-      const decoded = jwt.verify(req.body.token, process.env.JWT_KEY);
+      const decoded = jwt.verify(req.headers.authorization, process.env.JWT_KEY);
       next();
     } catch (err) {
       return res.status(401).json({
@@ -17,7 +28,7 @@ class Validator {
 
   admin(req, res, next) {
     try {
-      const decoded = jwt.verify(req.body.token, process.env.JWT_KEY);
+      const decoded = jwt.verify(req.headers.authorization, process.env.JWT_KEY);
       
       User.findById(decoded._id)
         .exec()
@@ -40,7 +51,7 @@ class Validator {
 
   adminLegacy(req, res, next) {
     try {
-      const decoded = jwt.verify(req.body.token, process.env.JWT_KEY);
+      const decoded = jwt.verify(req.headers.authorization, process.env.JWT_KEY);
       if (!decoded.admin)
         throw new Error();
 

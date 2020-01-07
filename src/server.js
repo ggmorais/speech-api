@@ -1,27 +1,10 @@
 require('dotenv').config();
-
 const app = require('./app');
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
-app.listen(process.env.PORT || 5000);
+http.listen(process.env.PORT || 5000);
 
-//const io = ws(server);
-
-/*
-io.on('connection', socket => {
-  console.log('Socket connected');
-  
-  socket.on('chat', data => {
-    console.log('Receiving message: ', data);
-    
-  });
-
-  setInterval(() => {
-    io.sockets.emit('chat', {
-      user: 'Gustavo',
-      message: 'EAE',
-      id: uniqueId()
-    });
-  }, 5000);
-
-});
-*/
+// io.on('connection', socket => {
+//   console.log('socket id connected: ', socket.id);
+// });

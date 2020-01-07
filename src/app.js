@@ -9,10 +9,11 @@ class App {
   constructor() {
     this.express = express();
 
+    // Headers must be the first called
+    this.headers();
     this.middlewares();
     this.routes();
     this.static();
-    this.headers();
     this.database();
     this.errors();
   }

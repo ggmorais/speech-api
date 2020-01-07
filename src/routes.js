@@ -6,7 +6,9 @@ const UserController = require('./api/controllers/UserController');
 const RoomController = require('./api/controllers/RoomController');
 
 
-router.get('/users', validate.user, UserController.index);
+router.get('/users/validation', validate.validation);
+
+router.get('/users', UserController.index);
 router.post('/users', UserController.create);
 router.post('/users/login', UserController.login);
 router.delete('/users', validate.admin, UserController.deleteMany);
@@ -18,7 +20,6 @@ router.delete('/rooms', validate.admin, RoomController.deleteMany);
 router.delete('/rooms/:roomId', validate.user, RoomController.deleteOne);
 router.patch('/rooms/:roomId', validate.user, RoomController.insertMessage);
 router.patch('/rooms/:roomId', validate.user, RoomController.insertUser);
-
 
 module.exports = router;
 
