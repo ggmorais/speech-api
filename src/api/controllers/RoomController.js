@@ -17,15 +17,36 @@ class RoomController {
       .catch(err => res.status(500).json(err));
   }
 
+  find(req, res) {
+    Room.find({
+      users: req.params.userId
+    })
+      .populate('users', '_id username')
+      .populate('messages.user', '_id username')
+      .select('_id users messages name')
+      .exec()
+      .then(docs => res.json({
+        message: 'Listing all chat with this user access.',
+        count: docs.length,
+        rooms: docs
+      }))
+      .catch(err => res.status(500).json(err));
+  }
+
   create(req, res) {
     new Room({
       _id: mongoose.Types.ObjectId(),
       name: req.body.name
     })
       .save()
-      .then(doc => res.json({
-        message: 'Room created successfully'
-      }))
+      .then(doc => (
+        Room.updateOne(
+          { _id: doc._id },
+          { $addToSet: { users: req.body.userId } }
+        ).then(doc => res.json({
+          message: 'Room created successfully'
+        }))
+      ))
       .catch(err => res.status(500).json(err));
   }
 
