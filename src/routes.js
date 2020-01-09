@@ -20,7 +20,7 @@ router.post('/rooms', validate.user, RoomController.create);
 router.delete('/rooms', validate.admin, RoomController.deleteMany);
 router.delete('/rooms/:roomId', validate.user, RoomController.deleteOne);
 router.patch('/rooms/:roomId', validate.user, RoomController.insertMessage);
-router.patch('/rooms/:roomId', validate.user, RoomController.insertUser);
+router.patch('/rooms/e/:roomId', validate.user, RoomController.insertUser);
 
 module.exports = router;
 

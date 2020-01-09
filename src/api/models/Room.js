@@ -6,7 +6,7 @@ const roomSchema = mongoose.Schema({
   name: { type: String, required: true },
   image: String,
   users: [ { type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  messages: [ { user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, body: String, postDate: { type: Date, default: Date.now() } } ]
+  messages: [ { user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, body: { type: String, required: true }, postDate: { type: Date, default: Date.now() } } ]
 });
 
 

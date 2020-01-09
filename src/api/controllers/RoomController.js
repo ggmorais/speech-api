@@ -69,6 +69,7 @@ class RoomController {
   }
 
   insertUser(req, res) {
+    console.log(req.body);
     Room.updateOne(
       { _id: req.params.roomId },
       { $addToSet: { users: req.body.userId } }
