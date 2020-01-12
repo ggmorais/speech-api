@@ -39,14 +39,17 @@ class RoomController {
       name: req.body.name
     })
       .save()
-      .then(doc => (
+      .then(doc => {
+        const roomId = doc._id;
+
         Room.updateOne(
           { _id: doc._id },
           { $addToSet: { users: req.body.userId } }
         ).then(doc => res.json({
-          message: 'Room created successfully'
+          message: 'Room created successfully',
+          _id: roomId
         }))
-      ))
+      })
       .catch(err => res.status(500).json(err));
   }
 
