@@ -7,24 +7,25 @@ class WebSocket {
     
     this.io = io(server);
 
-    this.socket = null;
-    this.userId = null;
-    this.activeRoom = null;
-
     this.io.on('connection', async socket => {
-      this.socket = socket;
-      this.socket.on('userInfos', async infos => {
-        this.userId = infos.userId;
-        this.activeRoom = infos.room;
+
+      socket.on('userId', async userId => {
+        this.roomList(socket, userId);
       });
-      this.socket.on('newMessage', async msg => {
-        this.activeRoom = msg.roomId;
-        this.newMessage(msg);
+      
+      socket.on('selectedRoom', roomId => {
+        socket.join(roomId);
+
+        this.roomData(socket, roomId);
+      })
+
+      socket.on('newMessage', async msg => {
+        this.io.to(msg.roomId).emit('test', 'roommmm ')
+        // this.newMessage(msg);
       })
 
       // First rooms loot
-      if (this.userId) this.sendRooms();
-
+      // if (this.userId) this.sendRooms();
     });
   }
 
@@ -32,17 +33,43 @@ class WebSocket {
     Room.updateOne(
       { _id: roomId }, 
       { $push: {
-        messages: { user: this.userId, body: body }
+        messages: { user: userId, body: body }
       } }
     )
       .exec()
       .then(docs => {
         // Send the new message to all other sockets connected to this room. How?
-        //this.socket.broadcast.emit...
+        // this.socket.broadcast.emit...
       })
   }
 
-  async sendRooms() {
+  async roomData(socket, roomId) {
+    Room.find({
+      _id: roomId
+    })
+      .populate('messages.user', '_id username')
+      .exec()
+      .then(docs => {
+        socket.emit('roomData', docs);
+      })
+  }
+
+  async roomList(socket, userId) {
+    Room.find({
+      users: userId
+    }, {
+      name: 1,
+      messages: { $slice: -1 }
+    })
+      .populate('messages.user', 'username _id')
+      .exec()
+      .then(docs => {
+        socket.emit('roomList', docs);
+      });
+
+  }
+
+  async sendRoomsOld() {
     Room.find({
       users: this.userId
     })
