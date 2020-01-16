@@ -20,16 +20,12 @@ class WebSocket {
       })
 
       socket.on('newMessage', async msg => {
-        this.io.to(msg.roomId).emit('test', 'roommmm ')
-        // this.newMessage(msg);
+        this.newMessage(msg, socket);
       })
-
-      // First rooms loot
-      // if (this.userId) this.sendRooms();
     });
   }
 
-  async newMessage({ roomId, body }) {
+  async newMessage({ roomId, userId, body}, socket) {
     Room.updateOne(
       { _id: roomId }, 
       { $push: {
@@ -38,8 +34,16 @@ class WebSocket {
     )
       .exec()
       .then(docs => {
-        // Send the new message to all other sockets connected to this room. How?
-        // this.socket.broadcast.emit...
+        Room.findOne({
+          _id: roomId 
+        }, {
+          messages: { $slice: -1 }
+        })
+          .populate('messages.user', '_id username')
+          .exec()
+          .then(docs => {
+            socket.to(roomId).emit('newMessage', docs);
+          })
       })
   }
 
@@ -64,7 +68,7 @@ class WebSocket {
       .populate('messages.user', 'username _id')
       .exec()
       .then(docs => {
-        socket.emit('roomList', docs);
+        socket.emit('roomList', docs)
       });
 
   }
